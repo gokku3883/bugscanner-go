@@ -70,3 +70,39 @@ func initConfig() {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
 }
+	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+var (
+	colorB1 = color.New(color.FgHiBlack)
+	colorW1 = color.New(color.FgWhite, color.Bold)
+	colorG1 = color.New(color.FgGreen, color.Bold)
+	colorL1 = color.New(color.FgBlue, color.Bold)
+	colorM1 = color.New(color.FgMagenta, color.Bold)
+	colorC1 = color.New(color.FgCyan, color.Bold)
+	colorY1 = color.New(color.FgYellow, color.Bold)
+)
+
+// initConfig reads in config file and ENV variables if set.
+func initConfig() {
+	if cfgFile != "" {
+		// Use config file from the flag.
+		viper.SetConfigFile(cfgFile)
+	} else {
+		// Find home directory.
+		home, err := os.UserHomeDir()
+		cobra.CheckErr(err)
+
+		// Search config in home directory with name ".bugscanner-go" (without extension).
+		viper.AddConfigPath(home)
+		viper.SetConfigType("yaml")
+		viper.SetConfigName(".bugscanner-go")
+	}
+
+	viper.AutomaticEnv() // read in environment variables that match
+
+	// If a config file is found, read it in.
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+	}
+}
